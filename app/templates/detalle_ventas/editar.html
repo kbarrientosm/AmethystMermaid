@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Editar detalle de venta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Editar detalle de venta</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Editar producto de la venta #{{ venta.id_venta }}</h2>
+
+            <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+
+                <label for="id_producto">Producto:</label>
+
+                <select name="id_producto" id="id_producto" required>
+
+                    {% for producto in productos %}
+
+                        <option value="{{ producto.id_producto }}"
+                                {% if producto.id_producto == detalle.id_producto %}
+                                    selected
+                                {% endif %}>
+
+                            {{ producto.nombre }}
+                            - ₡{{ "%.2f"|format(producto.precio) }}
+                            - Existencias: {{ producto.stock }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <label for="cantidad">Cantidad:</label>
+
+                <input
+                    type="number"
+                    name="cantidad"
+                    id="cantidad"
+                    min="1"
+                    value="{{ detalle.cantidad }}"
+                    required
+                >
+
+                <p>
+                    <strong>Precio unitario actual:</strong>
+                    ₡{{ "%.2f"|format(detalle.precio_unitario) }}
+                </p>
+
+                <p>
+                    <strong>Subtotal actual:</strong>
+                    ₡{{ "%.2f"|format(detalle.subtotal) }}
+                </p>
+
+                <div class="acciones">
+
+                    <button type="submit">
+                        Guardar cambios
+                    </button>
+
+                    <a href="{{ url_for('detalle_ventas.listar', id_venta=venta.id_venta) }}"
+                       class="boton">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

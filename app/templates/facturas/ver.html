@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Consultar factura</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Detalle de factura</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Factura N.º {{ factura.id_factura }}</h2>
+
+            <div class="contenedor">
+
+                <h3>Información de la factura</h3>
+
+                <p><strong>Número de factura:</strong> {{ factura.id_factura }}</p>
+
+                <p><strong>Número de venta:</strong> {{ factura.id_venta }}</p>
+
+                <p><strong>Fecha de emisión:</strong>
+                    {{ factura.fecha_emision.strftime('%d/%m/%Y %H:%M') if factura.fecha_emision else '' }}
+                </p>
+
+                <p><strong>Cliente:</strong> {{ factura.cliente }}</p>
+
+            </div>
+
+            <h3>Resumen de importes</h3>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Concepto</th>
+                        <th>Importe</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Subtotal</td>
+                        <td>₡{{ "{:,.2f}".format(factura.subtotal) }}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Impuesto</td>
+                        <td>₡{{ "{:,.2f}".format(factura.impuesto) }}</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Total de la factura</strong></td>
+                        <td>
+                            <strong>₡{{ "{:,.2f}".format(factura.monto_total) }}</strong>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="acciones">
+
+                <a href="{{ url_for('facturas.listar') }}" class="boton">
+                    Volver a facturas
+                </a>
+
+                <a href="{{ url_for('ventas.ver', id_venta=factura.id_venta) }}" class="boton">
+                    Consultar venta
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

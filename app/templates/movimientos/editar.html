@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Editar movimiento</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Actualización de movimientos de inventario</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Editar movimiento #{{ movimiento.id_movimiento }}</h2>
+
+            <p>Actualiza la información del movimiento seleccionado.</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+
+                <label for="producto">Producto:</label>
+
+                <input type="text"
+                       id="producto"
+                       value="{{ movimiento.producto }}"
+                       readonly>
+
+                <label for="tipo_movimiento">Tipo de movimiento:</label>
+
+                <select id="tipo_movimiento" name="tipo_movimiento" required>
+
+                    <option value="Entrada"
+                        {% if movimiento.tipo_movimiento | upper | trim == 'ENTRADA' %}selected{% endif %}>
+                        Entrada
+                    </option>
+
+                    <option value="Salida"
+                        {% if movimiento.tipo_movimiento | upper | trim == 'SALIDA' %}selected{% endif %}>
+                        Salida
+                    </option>
+
+                </select>
+
+                <label for="cantidad">Cantidad:</label>
+
+                <input type="number"
+                       id="cantidad"
+                       name="cantidad"
+                       min="1"
+                       step="1"
+                       required
+                       value="{{ request.form.get('cantidad', movimiento.cantidad) }}">
+
+                <label for="id_empleado">Empleado responsable:</label>
+
+                <select id="id_empleado" name="id_empleado" required>
+
+                    {% for empleado in empleados %}
+
+                        <option value="{{ empleado.id_empleado }}"
+                            {% if request.form.get('id_empleado', movimiento.id_empleado|string) == empleado.id_empleado|string %}selected{% endif %}>
+                            {{ empleado.nombre }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <label for="id_venta">Venta relacionada (opcional):</label>
+
+                <select id="id_venta" name="id_venta">
+
+                    <option value="">Sin venta asociada</option>
+
+                    {% for venta in ventas %}
+
+                        <option value="{{ venta.id_venta }}"
+                            {% if request.form.get('id_venta', movimiento.id_venta|string if movimiento.id_venta else '') == venta.id_venta|string %}selected{% endif %}>
+                            Venta #{{ venta.id_venta }} - {{ venta.cliente }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <label for="observacion">Observación:</label>
+
+                <textarea id="observacion"
+                          name="observacion"
+                          rows="4">{{ request.form.get('observacion', movimiento.observacion or '') }}</textarea>
+
+                <button type="submit">
+                    Guardar cambios
+                </button>
+
+                <a href="{{ url_for('movimientos.listar') }}" class="boton">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

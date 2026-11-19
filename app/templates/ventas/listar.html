@@ -1,0 +1,137 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Ventas</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Administración de ventas</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Ventas registradas</h2>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="acciones">
+
+                <a href="{{ url_for('ventas.registrar') }}" class="boton">
+                    Registrar venta
+                </a>
+
+                <a href="{{ url_for('inicio') }}" class="boton">
+                    Volver al inicio
+                </a>
+
+            </div>
+
+            {% if ventas %}
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha y hora</th>
+                            <th>Cliente</th>
+                            <th>Empleado</th>
+                            <th>Método de pago</th>
+                            <th>Estado</th>
+                            <th>Total</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for venta in ventas %}
+
+                            <tr>
+                                <td>{{ venta.id_venta }}</td>
+                                <td>{{ venta.fecha_hora }}</td>
+                                <td>{{ venta.cliente }}</td>
+                                <td>{{ venta.empleado }}</td>
+                                <td>{{ venta.metodo_pago }}</td>
+                                <td>{{ venta.estado }}</td>
+                                <td>₡{{ "%.2f"|format(venta.total) }}</td>
+
+                                <td>
+                                    <div class="acciones">
+
+                                        <a href="{{ url_for('ventas.ver', id_venta=venta.id_venta) }}"
+                                           class="boton">
+                                            Ver
+                                        </a>
+
+                                        {% if venta.estado == "Pendiente" %}
+
+                                            <a href="{{ url_for('ventas.editar', id_venta=venta.id_venta) }}"
+                                               class="boton">
+                                                Editar
+                                            </a>
+
+                                        {% endif %}
+
+                                        {% if venta.id_venta != 1 %}
+
+                                            <form method="POST"
+                                                  action="{{ url_for('ventas.eliminar', id_venta=venta.id_venta) }}"
+                                                  onsubmit="return confirm('¿Está seguro de eliminar esta venta?');">
+
+                                                <button type="submit">
+                                                    Eliminar
+                                                </button>
+
+                                            </form>
+
+                                        {% endif %}
+
+                                    </div>
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p>No hay ventas registradas.</p>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

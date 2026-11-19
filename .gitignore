@@ -1,0 +1,23 @@
+
+# Entorno virtual de Python
+.venv/
+venv/
+
+# Archivos privados de configuracion
+config.py
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+
+# Archivos temporales y de respaldo
+*.log
+*.tmp
+*.bak
+
+# Configuracion local del editor
+.vscode/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db

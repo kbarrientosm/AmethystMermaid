@@ -1,0 +1,119 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Productos | AmethystMermaid</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Administración de productos</p>
+    </header>
+
+    <main>
+
+        <section class="seccion-productos">
+
+            <h2>Inventario de productos</h2>
+
+            <p>Consulta y administra los productos de la tienda.</p>
+
+            <a href="{{ url_for('productos.registrar') }}">
+                Registrar nuevo producto
+            </a>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <p>{{ mensaje }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if productos %}
+
+                <div class="productos-grid">
+
+                    {% for producto in productos %}
+
+                        <article class="producto-card">
+
+                            <h3>{{ producto.nombre }}</h3>
+
+                            <p>
+                                <strong>Categoría:</strong>
+                                {{ producto.categoria }}
+                            </p>
+
+                            <p>
+                                <strong>Descripción:</strong>
+                                {{ producto.descripcion }}
+                            </p>
+
+                            <p>
+                                <strong>Precio:</strong>
+                                ₡{{ "{:,.0f}".format(producto.precio) }}
+                            </p>
+
+                            <p>
+                                <strong>Existencias:</strong>
+                                {{ producto.stock }}
+                            </p>
+
+                            <p>
+                                <strong>Stock mínimo:</strong>
+                                {{ producto.stock_minimo }}
+                            </p>
+
+                            {% if producto.stock <= producto.stock_minimo %}
+                                <p>Disponibilidad limitada</p>
+                            {% endif %}
+
+                            <a href="{{ url_for('productos.editar', id_producto=producto.id_producto) }}">
+                                Editar
+                            </a>
+
+                            <form
+                                action="{{ url_for('productos.eliminar', id_producto=producto.id_producto) }}"
+                                method="POST"
+                                onsubmit="return confirm('¿Deseas eliminar este producto?');">
+
+                                <button type="submit">
+                                    Eliminar
+                                </button>
+
+                            </form>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p>No hay productos registrados.</p>
+
+            {% endif %}
+
+        </section>
+
+        <a href="{{ url_for('inicio') }}">Volver al inicio</a>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid - Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

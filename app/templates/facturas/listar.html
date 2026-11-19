@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Facturas</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Administración de facturas</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Facturas registradas</h2>
+
+            <p>Consulta y administra las facturas generadas para las ventas.</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if facturas %}
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>N.º Factura</th>
+                                <th>N.º Venta</th>
+                                <th>Fecha de emisión</th>
+                                <th>Cliente</th>
+                                <th>Subtotal</th>
+                                <th>Impuesto</th>
+                                <th>Total</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for factura in facturas %}
+
+                                <tr>
+                                    <td>{{ factura.id_factura }}</td>
+
+                                    <td>{{ factura.id_venta }}</td>
+
+                                    <td>
+                                        {{ factura.fecha_emision.strftime('%d/%m/%Y %H:%M') if factura.fecha_emision else '' }}
+                                    </td>
+
+                                    <td>{{ factura.cliente }}</td>
+
+                                    <td>₡{{ "{:,.2f}".format(factura.subtotal) }}</td>
+
+                                    <td>₡{{ "{:,.2f}".format(factura.impuesto) }}</td>
+
+                                    <td>₡{{ "{:,.2f}".format(factura.monto_total) }}</td>
+
+                                    <td class="acciones">
+
+                                        <a href="{{ url_for('facturas.ver', id_factura=factura.id_factura) }}"
+                                           class="boton">
+                                            Ver
+                                        </a>
+
+                                        {% if factura.id_factura != 1 and factura.id_venta != 1 %}
+
+                                            <a href="{{ url_for('facturas.editar', id_factura=factura.id_factura) }}"
+                                               class="boton">
+                                                Editar
+                                            </a>
+
+                                            <form action="{{ url_for('facturas.eliminar', id_factura=factura.id_factura) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('¿Está segura de eliminar esta factura?');">
+
+                                                <button type="submit">
+                                                    Eliminar
+                                                </button>
+
+                                            </form>
+
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <p>No hay facturas registradas.</p>
+
+            {% endif %}
+
+            <div class="acciones">
+                <a href="{{ url_for('inicio') }}" class="boton">
+                    Volver al inicio
+                </a>
+
+                <a href="{{ url_for('ventas.listar') }}" class="boton">
+                    Consultar ventas
+                </a>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Agregar producto a venta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Agregar producto a una venta</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Agregar producto a la venta #{{ venta.id_venta }}</h2>
+
+            <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+            <p><strong>Estado:</strong> {{ venta.estado }}</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+
+                <label for="id_producto">Producto:</label>
+
+                <select name="id_producto" id="id_producto" required>
+
+                    <option value="">Seleccione un producto</option>
+
+                    {% for producto in productos %}
+
+                        <option value="{{ producto.id_producto }}"
+                                {% if request.form.get('id_producto') == producto.id_producto|string %}
+                                    selected
+                                {% endif %}>
+
+                            {{ producto.nombre }}
+                            - ₡{{ "%.2f"|format(producto.precio) }}
+                            - Existencias: {{ producto.stock }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <label for="cantidad">Cantidad:</label>
+
+                <input
+                    type="number"
+                    name="cantidad"
+                    id="cantidad"
+                    min="1"
+                    value="{{ request.form.get('cantidad', '') }}"
+                    required
+                >
+
+                <div class="acciones">
+
+                    <button type="submit">
+                        Agregar producto
+                    </button>
+
+                    <a href="{{ url_for('detalle_ventas.listar', id_venta=venta.id_venta) }}"
+                       class="boton">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

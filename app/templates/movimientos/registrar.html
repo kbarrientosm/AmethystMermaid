@@ -1,0 +1,131 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Registrar movimiento</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Administración de movimientos de inventario</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Registrar movimiento de inventario</h2>
+
+            <p>Registra una entrada, salida o ajuste de productos en el inventario.</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+
+                <label for="id_producto">Producto:</label>
+
+                <select name="id_producto" id="id_producto" required>
+                    <option value="">Seleccione un producto</option>
+
+                    {% for producto in productos %}
+                        <option value="{{ producto.id_producto }}">
+                            {{ producto.nombre }} - Stock actual: {{ producto.stock }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+                <label for="id_empleado">Empleado responsable:</label>
+
+                <select name="id_empleado" id="id_empleado" required>
+                    <option value="">Seleccione un empleado</option>
+
+                    {% for empleado in empleados %}
+                        <option value="{{ empleado.id_empleado }}">
+                            {{ empleado.nombre }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+                <label for="tipo_movimiento">Tipo de movimiento:</label>
+
+                <select name="tipo_movimiento" id="tipo_movimiento" required>
+                    <option value="">Seleccione el tipo</option>
+
+                    {% for tipo in tipos_movimiento %}
+                        <option value="{{ tipo }}">{{ tipo }}</option>
+                    {% endfor %}
+
+                </select>
+
+                <label for="cantidad">Cantidad:</label>
+
+                <input
+                    type="number"
+                    name="cantidad"
+                    id="cantidad"
+                    min="1"
+                    required
+                >
+
+                <label for="id_venta">Venta asociada (opcional):</label>
+
+                <select name="id_venta" id="id_venta">
+                    <option value="">Sin venta asociada</option>
+
+                    {% for venta in ventas %}
+                        <option value="{{ venta.id_venta }}">
+                            Venta #{{ venta.id_venta }} - {{ venta.cliente }}
+                        </option>
+                    {% endfor %}
+
+                </select>
+
+                <label for="observacion">Observación:</label>
+
+                <textarea
+                    name="observacion"
+                    id="observacion"
+                    rows="4"
+                    placeholder="Describe el motivo del movimiento"
+                ></textarea>
+
+                <button type="submit">
+                    Registrar movimiento
+                </button>
+
+                <a href="{{ url_for('movimientos.listar') }}" class="boton">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>
+```

@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Categorías | AmethystMermaid</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Administración de categorías</p>
+    </header>
+
+    <main>
+
+        <section class="seccion-productos">
+
+            <h2>Categorías de productos</h2>
+
+            <p>Consulta y administra las categorías de la tienda.</p>
+
+            <a href="{{ url_for('categorias.registrar') }}">
+                Registrar nueva categoría
+            </a>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <p>{{ mensaje }}</p>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% if categorias %}
+
+                <div class="productos-grid">
+
+                    {% for categoria in categorias %}
+
+                        <article class="producto-card">
+
+                            <h3>{{ categoria.nombre }}</h3>
+
+                            <p>
+                                <strong>ID de categoría:</strong>
+                                {{ categoria.id_categoria }}
+                            </p>
+
+                            <a href="{{ url_for('categorias.editar', id_categoria=categoria.id_categoria) }}">
+                                Editar
+                            </a>
+
+                            <form
+                                action="{{ url_for('categorias.eliminar', id_categoria=categoria.id_categoria) }}"
+                                method="POST"
+                                onsubmit="return confirm('¿Deseas eliminar esta categoría?');">
+
+                                <button type="submit">
+                                    Eliminar
+                                </button>
+
+                            </form>
+
+                        </article>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <p>No hay categorías registradas.</p>
+
+            {% endif %}
+
+        </section>
+
+        <a href="{{ url_for('inicio') }}">Volver al inicio</a>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid - Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

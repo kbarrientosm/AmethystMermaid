@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Consultar venta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Información de la venta</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Venta #{{ venta.id_venta }}</h2>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <table>
+
+                <tbody>
+
+                    <tr>
+                        <th>Número de venta</th>
+                        <td>{{ venta.id_venta }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Fecha y hora</th>
+                        <td>{{ venta.fecha_hora }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Cliente</th>
+                        <td>{{ venta.cliente }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Empleado</th>
+                        <td>{{ venta.empleado }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Método de pago</th>
+                        <td>{{ venta.metodo_pago }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Estado</th>
+                        <td>{{ venta.estado }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Total</th>
+                        <td>₡{{ "%.2f"|format(venta.total) }}</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+            <div class="acciones">
+
+                <a href="{{ url_for('detalle_ventas.listar', id_venta=venta.id_venta) }}"
+                   class="boton">
+                    Consultar detalles
+                </a>
+
+                {% if venta.estado == "Pendiente" %}
+
+                    <a href="{{ url_for('ventas.editar', id_venta=venta.id_venta) }}"
+                       class="boton">
+                        Editar venta
+                    </a>
+
+                {% endif %}
+
+                <a href="{{ url_for('ventas.listar') }}" class="boton">
+                    Volver a ventas
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Registrar factura</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Emisión de facturas</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Registrar factura</h2>
+
+            <p>Revisa la información de la venta antes de emitir la factura.</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <h3>Información de la venta</h3>
+
+            <p><strong>Número de venta:</strong> {{ venta.id_venta }}</p>
+
+            <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+
+            <p><strong>Empleado:</strong> {{ venta.empleado }}</p>
+
+            <p><strong>Estado:</strong> {{ venta.estado }}</p>
+
+            <h3>Productos incluidos</h3>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for detalle in detalles %}
+
+                        <tr>
+                            <td>{{ detalle.producto }}</td>
+                            <td>{{ detalle.cantidad }}</td>
+                            <td>₡{{ "{:,.2f}".format(detalle.precio_unitario) }}</td>
+                            <td>₡{{ "{:,.2f}".format(detalle.subtotal) }}</td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+            <h3>Resumen de factura</h3>
+
+            <p><strong>Subtotal:</strong> ₡{{ "{:,.2f}".format(subtotal) }}</p>
+
+            <p><strong>Impuesto (13%):</strong> ₡{{ "{:,.2f}".format(impuesto) }}</p>
+
+            <p><strong>Total:</strong> ₡{{ "{:,.2f}".format(monto_total) }}</p>
+
+            <form method="POST">
+
+                <p>
+                    Verifica los importes antes de confirmar la emisión.
+                </p>
+
+                <button type="submit"
+                        onclick="return confirm('¿Desea emitir la factura de esta venta?');">
+                    Registrar factura
+                </button>
+
+                <a href="{{ url_for('ventas.listar') }}" class="boton">
+                    Cancelar
+                </a>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

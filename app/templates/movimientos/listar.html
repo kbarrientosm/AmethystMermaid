@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Movimientos de inventario</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Administración de movimientos de inventario</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Movimientos de inventario</h2>
+
+            <p>Consulta las entradas, salidas y ajustes registrados en el inventario.</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="acciones">
+                <a href="{{ url_for('movimientos.registrar') }}" class="boton">
+                    Registrar movimiento
+                </a>
+            </div>
+
+            {% if movimientos %}
+
+                <div class="tabla-contenedor">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>N.º Movimiento</th>
+                                <th>Producto</th>
+                                <th>Empleado</th>
+                                <th>Venta</th>
+                                <th>Tipo</th>
+                                <th>Cantidad</th>
+                                <th>Fecha</th>
+                                <th>Observación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for movimiento in movimientos %}
+
+                                <tr>
+                                    <td>{{ movimiento.id_movimiento }}</td>
+
+                                    <td>{{ movimiento.producto }}</td>
+
+                                    <td>{{ movimiento.empleado }}</td>
+
+                                    <td>{{ movimiento.id_venta if movimiento.id_venta else 'No asociada' }}</td>
+
+                                    <td>{{ movimiento.tipo_movimiento }}</td>
+
+                                    <td>{{ movimiento.cantidad }}</td>
+
+                                    <td>
+                                        {{ movimiento.fecha_movimiento.strftime('%d/%m/%Y %H:%M') if movimiento.fecha_movimiento else '' }}
+                                    </td>
+
+                                    <td>{{ movimiento.observacion or 'Sin observación' }}</td>
+
+                                    <td class="acciones">
+
+                                        {% if movimiento.tipo_movimiento | upper | trim != 'AJUSTE' %}
+
+                                            <a href="{{ url_for('movimientos.editar', id_movimiento=movimiento.id_movimiento) }}"
+                                               class="boton">
+                                                Editar
+                                            </a>
+
+                                            <form action="{{ url_for('movimientos.eliminar', id_movimiento=movimiento.id_movimiento) }}"
+                                                  method="POST"
+                                                  onsubmit="return confirm('¿Está segura de eliminar este movimiento? Esta operación modificará nuevamente las existencias del producto.');">
+
+                                                <button type="submit">
+                                                    Eliminar
+                                                </button>
+
+                                            </form>
+
+                                        {% else %}
+
+                                            <span>Solo consulta</span>
+
+                                        {% endif %}
+
+                                    </td>
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <p>No hay movimientos de inventario registrados.</p>
+
+            {% endif %}
+
+            <div class="acciones">
+
+                <a href="{{ url_for('inicio') }}" class="boton">
+                    Volver al inicio
+                </a>
+
+                <a href="{{ url_for('productos.listar') }}" class="boton">
+                    Consultar productos
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

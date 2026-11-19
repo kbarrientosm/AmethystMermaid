@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AmethystMermaid | Detalle de venta</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <h1>AmethystMermaid</h1>
+        <p>Detalle de venta</p>
+    </header>
+
+    <main class="contenedor">
+
+        <section class="seccion-productos">
+
+            <h2>Detalle de la venta #{{ venta.id_venta }}</h2>
+
+            <p><strong>Cliente:</strong> {{ venta.cliente }}</p>
+            <p><strong>Empleado:</strong> {{ venta.empleado }}</p>
+            <p><strong>Fecha:</strong> {{ venta.fecha_hora }}</p>
+            <p><strong>Estado:</strong> {{ venta.estado }}</p>
+            <p><strong>Método de pago:</strong> {{ venta.metodo_pago }}</p>
+            <p><strong>Total:</strong> ₡{{ "%.2f"|format(venta.total) }}</p>
+
+            {% with mensajes = get_flashed_messages(with_categories=true) %}
+                {% if mensajes %}
+                    {% for categoria, mensaje in mensajes %}
+                        <div class="mensaje {{ categoria }}">
+                            {{ mensaje }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="acciones">
+
+                {% if venta.estado == "Pendiente" %}
+                    <a href="{{ url_for('detalle_ventas.registrar', id_venta=venta.id_venta) }}"
+                       class="boton">
+                        Agregar producto
+                    </a>
+                {% endif %}
+
+                <a href="{{ url_for('ventas.listar') }}" class="boton">
+                    Volver a ventas
+                </a>
+
+            </div>
+
+            <h3>Productos de la venta</h3>
+
+            {% if detalles %}
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>ID detalle</th>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                            {% if venta.estado == "Pendiente" %}
+                                <th>Acciones</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for detalle in detalles %}
+
+                            <tr>
+                                <td>{{ detalle.id_detalle }}</td>
+                                <td>{{ detalle.producto }}</td>
+                                <td>{{ detalle.cantidad }}</td>
+                                <td>₡{{ "%.2f"|format(detalle.precio_unitario) }}</td>
+                                <td>₡{{ "%.2f"|format(detalle.subtotal) }}</td>
+
+                                {% if venta.estado == "Pendiente" %}
+                                    <td>
+
+                                        <div class="acciones">
+
+                                            <a href="{{ url_for('detalle_ventas.editar', id_detalle=detalle.id_detalle) }}"
+                                               class="boton">
+                                                Editar
+                                            </a>
+
+                                            <form method="POST"
+                                                  action="{{ url_for('detalle_ventas.eliminar', id_detalle=detalle.id_detalle) }}"
+                                                  onsubmit="return confirm('¿Está seguro de eliminar este producto de la venta?');">
+
+                                                <button type="submit">
+                                                    Eliminar
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    </td>
+                                {% endif %}
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            {% else %}
+
+                <p>Esta venta todavía no tiene productos registrados.</p>
+
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>AmethystMermaid | Bienestar y crecimiento personal</p>
+    </footer>
+
+</body>
+
+</html>

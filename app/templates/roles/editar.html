@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Editar rol | AmethystMermaid</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estilos.css') }}">
+</head>
+
+<body>
+
+    <main class="contenedor">
+
+        <h1>Editar rol</h1>
+
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% if mensajes %}
+                {% for categoria, mensaje in mensajes %}
+                    <div class="mensaje {{ categoria }}">
+                        {{ mensaje }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+
+            <label for="nombre">Nombre del rol:</label>
+            <input
+                type="text"
+                id="nombre"
+                name="nombre"
+                value="{{ rol.nombre }}"
+                required
+            >
+
+            <label for="descripcion">Descripción:</label>
+            <textarea
+                id="descripcion"
+                name="descripcion"
+                required
+            >{{ rol.descripcion }}</textarea>
+
+            <button type="submit">Guardar cambios</button>
+
+            <a href="{{ url_for('roles.listar') }}" class="boton">
+                Cancelar
+            </a>
+
+        </form>
+
+    </main>
+
+</body>
+</html>
